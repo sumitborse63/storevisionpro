@@ -206,7 +206,7 @@ fun GstInvoicingDialog(uiState: StoreUiState, onDismiss: () -> Unit) {
     val context = LocalContext.current
     var customerName by remember { mutableStateOf("Rohit Sharma") }
     var customerGstin by remember { mutableStateOf("27AABCU9603R1ZM") }
-    var selectedGstRate by remember { mutableStateOf(18) }
+    var selectedGstRate by remember { androidx.compose.runtime.mutableIntStateOf(18) }
 
     val subtotal = 450.0
     val cgst = subtotal * (selectedGstRate / 200.0)
@@ -319,7 +319,7 @@ fun GstInvoicingDialog(uiState: StoreUiState, onDismiss: () -> Unit) {
 fun CustomerLoyaltyDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
     var customerPhone by remember { mutableStateOf("9876543210") }
-    var pointsBalance by remember { mutableStateOf(420) }
+    var pointsBalance by remember { androidx.compose.runtime.mutableIntStateOf(420) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -607,7 +607,7 @@ fun SyncQueueDialog(
 @Composable
 fun HospitalityKdsDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
-    var selectedTable by remember { mutableStateOf(4) }
+    var selectedTable by remember { androidx.compose.runtime.mutableIntStateOf(4) }
     var orderSent by remember { mutableStateOf(false) }
 
     val foodItems = listOf(

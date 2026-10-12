@@ -112,7 +112,7 @@ fun BarcodeScannerSheet(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
-                        .offset(y = (laserOffsetY - 90f).dp)
+                        .offset { androidx.compose.ui.unit.IntOffset(0, (laserOffsetY - 90f).dp.roundToPx()) }
                         .height(2.dp)
                         .background(ElectricEmerald)
                 )
