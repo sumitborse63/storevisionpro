@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sktech.storevisionpro.domain.model.ProductItem
+import com.sktech.storevisionpro.ui.components.DoubleBezelCard
 import com.sktech.storevisionpro.ui.pos.BarcodeScannerSheet
 import com.sktech.storevisionpro.ui.state.StoreUiState
 import com.sktech.storevisionpro.ui.state.StoreViewModel
@@ -54,12 +55,12 @@ fun ProductManagementScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Header
         Surface(
-            color = ZincCharcoal,
-            border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
+            color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
@@ -76,7 +77,7 @@ fun ProductManagementScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back",
-                                tint = OffWhitePearl
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Column {
@@ -84,12 +85,12 @@ fun ProductManagementScreen(
                                 text = "Product Inventory Catalog",
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = OffWhitePearl
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             )
                             Text(
-                                text = "${uiState.products.size} Active SKUs • Live Stock Tracking",
-                                style = MaterialTheme.typography.labelSmall.copy(color = MutedSilver)
+                                text = "${uiState.products.size} Active SKUs • Live Stock Steppers",
+                                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     }
@@ -97,14 +98,14 @@ fun ProductManagementScreen(
                     // Add Product Button
                     Button(
                         onClick = { showAddDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = ElectricEmerald),
-                        shape = RoundedCornerShape(8.dp),
-                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add Product",
-                            tint = OffWhitePearl,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -112,7 +113,7 @@ fun ProductManagementScreen(
                             text = "Add Item",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = OffWhitePearl
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         )
                     }
@@ -122,9 +123,9 @@ fun ProductManagementScreen(
 
                 // Search Bar with Barcode Scanner Icon
                 Surface(
-                    color = ZincMetal,
-                    shape = RoundedCornerShape(8.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(10.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -134,7 +135,7 @@ fun ProductManagementScreen(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search",
-                            tint = DimGhost,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
                         TextField(
@@ -143,7 +144,7 @@ fun ProductManagementScreen(
                             placeholder = {
                                 Text(
                                     text = "Search product name or barcode...",
-                                    style = MaterialTheme.typography.bodyMedium.copy(color = DimGhost)
+                                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                                 )
                             },
                             colors = TextFieldDefaults.colors(
@@ -151,9 +152,9 @@ fun ProductManagementScreen(
                                 unfocusedContainerColor = Color.Transparent,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
-                                cursorColor = ElectricEmerald,
-                                focusedTextColor = OffWhitePearl,
-                                unfocusedTextColor = OffWhitePearl
+                                cursorColor = MaterialTheme.colorScheme.primary,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             ),
                             modifier = Modifier.weight(1f),
                             singleLine = true
@@ -162,7 +163,7 @@ fun ProductManagementScreen(
                             Icon(
                                 imageVector = Icons.Default.QrCodeScanner,
                                 contentDescription = "Scan Barcode",
-                                tint = ElectricEmerald
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -182,10 +183,10 @@ fun ProductManagementScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(if (selected) EmeraldMuted else ZincMetal)
+                        .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant)
                         .border(
                             1.dp,
-                            if (selected) ElectricEmerald else SlateDivider,
+                            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                             RoundedCornerShape(16.dp)
                         )
                         .clickable { selectedCategory = category }
@@ -195,7 +196,7 @@ fun ProductManagementScreen(
                         text = category,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (selected) ElectricEmerald else MutedSilver
+                            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
@@ -211,7 +212,10 @@ fun ProductManagementScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(filteredProducts, key = { it.id }) { product ->
-                ProductInventoryRow(product = product)
+                ProductInventoryRow(
+                    product = product,
+                    onAdjustStock = { delta -> viewModel.adjustStock(product.id, delta) }
+                )
             }
         }
     }
@@ -238,118 +242,195 @@ fun ProductManagementScreen(
 }
 
 @Composable
-fun ProductInventoryRow(product: ProductItem) {
-    Surface(
-        color = ZincCharcoal,
-        shape = RoundedCornerShape(8.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
-        modifier = Modifier.fillMaxWidth()
+fun ProductInventoryRow(
+    product: ProductItem,
+    onAdjustStock: (Double) -> Unit
+) {
+    DoubleBezelCard(
+        modifier = Modifier.fillMaxWidth(),
+        outerCornerRadius = 14.dp,
+        innerCornerRadius = 10.dp,
+        innerPadding = 12.dp
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = product.name,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = OffWhitePearl
-                        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = product.name,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = product.category,
-                            style = MaterialTheme.typography.labelSmall.copy(color = MutedSilver)
-                        )
-                        if (product.barcode != null) {
-                            Text(text = "•", color = DimGhost)
-                            Text(
-                                text = product.barcode,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontFamily = FontFamily.Monospace,
-                                    color = DimGhost
-                                )
-                            )
-                        }
-                    }
-                }
-
-                // Remaining Stock Pill
-                val (stockColor, bgStockColor) = when {
-                    product.currentStock == 0.0 -> SignalCrimson to CrimsonMuted
-                    product.currentStock <= product.lowStockThreshold -> WarningAmber to AmberMuted
-                    else -> ElectricEmerald to EmeraldMuted
-                }
-
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(bgStockColor)
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Stock: ${product.currentStock.toInt()} ${product.unit}s",
+                        text = product.category,
+                        style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    )
+                    if (product.barcode != null) {
+                        Text(text = "•", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                        Text(
+                            text = product.barcode,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontFamily = FontFamily.Monospace,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                            )
+                        )
+                    }
+                }
+            }
+
+            // Remaining Stock Pill
+            val (stockColor, bgStockColor) = when {
+                product.currentStock == 0.0 -> SignalCrimson to CrimsonMuted
+                product.currentStock <= product.lowStockThreshold -> WarningAmber to AmberMuted
+                else -> MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.primaryContainer
+            }
+
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(bgStockColor)
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Stock: ${product.currentStock.toInt()} ${product.unit}s",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold,
+                        color = stockColor
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Pricing & Batch / Expiry details
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Sell: ₹${"%.2f".format(product.sellingPrice)}",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+                Text(
+                    text = "Cost: ₹${"%.2f".format(product.costPrice)}",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontFamily = FontFamily.Monospace,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            }
+
+            if (product.hasExpiry && product.daysUntilExpiry != null) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(if (product.daysUntilExpiry <= 2) CrimsonMuted else MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "Expires in ${product.daysUntilExpiry}d (Batch ${product.batchNo})",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = stockColor
+                            color = if (product.daysUntilExpiry <= 2) SignalCrimson else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-            // Pricing & Batch / Expiry details
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        // Live Quick Stock Steppers
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Quick Adjust: ",
+                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                modifier = Modifier.padding(end = 6.dp)
+            )
+
+            // -1 Sold Stepper
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(6.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
+                modifier = Modifier
+                    .clickable { onAdjustStock(-1.0) }
+                    .padding(horizontal = 2.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Sell: ₹${"%.2f".format(product.sellingPrice)}",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold,
-                            color = ElectricEmerald
-                        )
-                    )
-                    Text(
-                        text = "Cost: ₹${"%.2f".format(product.costPrice)}",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontFamily = FontFamily.Monospace,
-                            color = DimGhost
-                        )
-                    )
-                }
+                Text(
+                    text = "-1",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
 
-                if (product.hasExpiry && product.daysUntilExpiry != null) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(if (product.daysUntilExpiry <= 2) CrimsonMuted else ZincMetal)
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = "Expires in ${product.daysUntilExpiry}d (Batch ${product.batchNo})",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (product.daysUntilExpiry <= 2) SignalCrimson else MutedSilver
-                            )
-                        )
-                    }
-                }
+            Spacer(modifier = Modifier.width(6.dp))
+
+            // +5 Restock Stepper
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(6.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
+                modifier = Modifier
+                    .clickable { onAdjustStock(5.0) }
+                    .padding(horizontal = 2.dp)
+            ) {
+                Text(
+                    text = "+5 Restock",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(6.dp))
+
+            // +10 Restock Stepper
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(6.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
+                modifier = Modifier
+                    .clickable { onAdjustStock(10.0) }
+                    .padding(horizontal = 2.dp)
+            ) {
+                Text(
+                    text = "+10",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
             }
         }
     }
@@ -369,11 +450,14 @@ fun AddProductDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = ZincCharcoal,
+        containerColor = MaterialTheme.colorScheme.surface,
         title = {
             Text(
                 text = "Add New Product SKU",
-                style = MaterialTheme.typography.titleLarge.copy(color = OffWhitePearl)
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             )
         },
         text = {
@@ -384,92 +468,110 @@ fun AddProductDialog(
                     label = { Text("Product Name *") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = OffWhitePearl,
-                        unfocusedTextColor = OffWhitePearl,
-                        focusedBorderColor = ElectricEmerald,
-                        unfocusedBorderColor = SlateDivider
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
                 OutlinedTextField(
                     value = category,
                     onValueChange = { category = it },
-                    label = { Text("Category *") },
+                    label = { Text("Category (e.g. Dairy, FMCG)") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = OffWhitePearl,
-                        unfocusedTextColor = OffWhitePearl,
-                        focusedBorderColor = ElectricEmerald,
-                        unfocusedBorderColor = SlateDivider
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = price,
                         onValueChange = { price = it },
-                        label = { Text("Selling Price *") },
+                        label = { Text("Sell Price (₹) *") },
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = OffWhitePearl,
-                            unfocusedTextColor = OffWhitePearl,
-                            focusedBorderColor = ElectricEmerald,
-                            unfocusedBorderColor = SlateDivider
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
                         )
                     )
+                    OutlinedTextField(
+                        value = costPrice,
+                        onValueChange = { costPrice = it },
+                        label = { Text("Cost Price (₹)") },
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        )
+                    )
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = stock,
                         onValueChange = { stock = it },
                         label = { Text("Initial Stock *") },
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = OffWhitePearl,
-                            unfocusedTextColor = OffWhitePearl,
-                            focusedBorderColor = ElectricEmerald,
-                            unfocusedBorderColor = SlateDivider
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        )
+                    )
+                    OutlinedTextField(
+                        value = barcode,
+                        onValueChange = { barcode = it },
+                        label = { Text("Barcode") },
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
                         )
                     )
                 }
-                OutlinedTextField(
-                    value = barcode,
-                    onValueChange = { barcode = it },
-                    label = { Text("Barcode (Optional)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = OffWhitePearl,
-                        unfocusedTextColor = OffWhitePearl,
-                        focusedBorderColor = ElectricEmerald,
-                        unfocusedBorderColor = SlateDivider
-                    )
-                )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
                     if (name.isNotBlank() && price.toDoubleOrNull() != null) {
+                        val sellVal = price.toDoubleOrNull() ?: 0.0
+                        val costVal = costPrice.toDoubleOrNull() ?: (sellVal * 0.8)
                         onAddProduct(
                             ProductItem(
                                 id = "P-${System.currentTimeMillis()}",
                                 name = name,
                                 category = category.ifBlank { "General" },
-                                sellingPrice = price.toDoubleOrNull() ?: 0.0,
-                                costPrice = costPrice.toDoubleOrNull() ?: (price.toDoubleOrNull() ?: 0.0) * 0.8,
+                                sellingPrice = sellVal,
+                                costPrice = costVal,
                                 currentStock = stock.toDoubleOrNull() ?: 10.0,
                                 barcode = barcode.ifBlank { null }
                             )
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = ElectricEmerald)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Save Product", color = OffWhitePearl)
+                Text("Save SKU", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
             OutlinedButton(
                 onClick = onDismiss,
-                border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider)
+                shape = RoundedCornerShape(8.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
-                Text("Cancel", color = MutedSilver)
+                Text("Cancel", color = MaterialTheme.colorScheme.onSurface)
             }
         }
     )

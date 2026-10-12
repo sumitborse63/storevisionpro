@@ -47,9 +47,9 @@ fun AiChatbotSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = ZincCharcoal,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = {
-            BottomSheetDefaults.DragHandle(color = SlateDivider)
+            BottomSheetDefaults.DragHandle(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
         },
         modifier = Modifier.fillMaxHeight(0.88f)
     ) {
@@ -75,20 +75,20 @@ fun AiChatbotSheet(
                             text = "StoreVision AI Assistant",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = OffWhitePearl
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(EmeraldMuted)
+                                .background(MaterialTheme.colorScheme.primaryContainer)
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = "AGENTIC AI",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontSize = 9.sp,
-                                    color = ElectricEmerald,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -96,7 +96,7 @@ fun AiChatbotSheet(
                     }
                     Text(
                         text = "Scoped to active branch • Owner approval enforced",
-                        style = MaterialTheme.typography.labelSmall.copy(color = MutedSilver)
+                        style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                 }
 
@@ -104,12 +104,12 @@ fun AiChatbotSheet(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        tint = MutedSilver
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
-            HorizontalDivider(color = SlateDivider, thickness = 1.dp)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 1.dp)
 
             // Chat Message Stream
             LazyColumn(

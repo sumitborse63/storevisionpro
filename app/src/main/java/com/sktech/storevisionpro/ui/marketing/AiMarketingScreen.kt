@@ -51,7 +51,7 @@ fun AiMarketingScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -65,7 +65,7 @@ fun AiMarketingScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = OffWhitePearl
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Column {
@@ -73,12 +73,12 @@ fun AiMarketingScreen(
                         text = "AI Marketing & Creative Studio",
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = OffWhitePearl
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     )
                     Text(
                         text = "Persistent Shop Branding, Canvas Posters & Social Copy",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = MutedSilver)
+                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                 }
             }

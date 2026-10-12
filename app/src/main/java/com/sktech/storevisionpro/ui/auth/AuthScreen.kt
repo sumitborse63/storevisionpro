@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sktech.storevisionpro.domain.model.ShopType
+import com.sktech.storevisionpro.ui.components.DoubleBezelCard
 import com.sktech.storevisionpro.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +38,7 @@ fun AuthScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -49,202 +50,200 @@ fun AuthScreen(
                 fontWeight = FontWeight.Black,
                 letterSpacing = 1.sp,
                 fontSize = 26.sp,
-                color = OffWhitePearl
+                color = MaterialTheme.colorScheme.onBackground
             )
         )
         Text(
             text = "Enterprise Retail Intelligence & POS",
-            style = MaterialTheme.typography.bodyMedium.copy(color = ElectricEmerald)
+            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
         )
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // Card Container
-        Card(
-            colors = CardDefaults.cardColors(containerColor = ZincCharcoal),
-            shape = RoundedCornerShape(16.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
-            modifier = Modifier.fillMaxWidth()
+        // Card Container with Double-Bezel
+        DoubleBezelCard(
+            modifier = Modifier.fillMaxWidth(),
+            outerCornerRadius = 18.dp,
+            innerCornerRadius = 14.dp,
+            innerPadding = 20.dp
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                // Tab Row: Sign In vs Register
-                Row(
+            // Tab Row: Sign In vs Register
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(4.dp)
+            ) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(ZincMetal)
-                        .padding(4.dp)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(if (!isRegisterMode) MaterialTheme.colorScheme.surface else Color.Transparent)
+                        .clickable { isRegisterMode = false }
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(if (!isRegisterMode) ZincCharcoal else Color.Transparent)
-                            .clickable { isRegisterMode = false }
-                            .padding(vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Sign In",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = if (!isRegisterMode) OffWhitePearl else MutedSilver
-                            )
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(if (isRegisterMode) ZincCharcoal else Color.Transparent)
-                            .clickable { isRegisterMode = true }
-                            .padding(vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "New Store Register",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = if (isRegisterMode) OffWhitePearl else MutedSilver
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                if (isRegisterMode) {
-                    OutlinedTextField(
-                        value = shopName,
-                        onValueChange = { shopName = it },
-                        label = { Text("Shop / Business Name") },
-                        leadingIcon = { Icon(Icons.Default.Store, null, tint = DimGhost) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = OffWhitePearl,
-                            unfocusedTextColor = OffWhitePearl,
-                            focusedBorderColor = ElectricEmerald,
-                            unfocusedBorderColor = SlateDivider
+                    Text(
+                        text = "Sign In",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = if (!isRegisterMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    // Shop Type Dropdown
-                    ExposedDropdownMenuBox(
-                        expanded = isShopTypeExpanded,
-                        onExpandedChange = { isShopTypeExpanded = it }
-                    ) {
-                        OutlinedTextField(
-                            value = selectedShopType.displayName,
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("Business Type") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isShopTypeExpanded) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = OffWhitePearl,
-                                unfocusedTextColor = OffWhitePearl,
-                                focusedBorderColor = ElectricEmerald,
-                                unfocusedBorderColor = SlateDivider
-                            )
-                        )
-                        ExposedDropdownMenu(
-                            expanded = isShopTypeExpanded,
-                            onDismissRequest = { isShopTypeExpanded = false },
-                            containerColor = ZincMetal
-                        ) {
-                            ShopType.values().forEach { type ->
-                                DropdownMenuItem(
-                                    text = { Text(type.displayName, color = OffWhitePearl) },
-                                    onClick = {
-                                        selectedShopType = type
-                                        isShopTypeExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(if (isRegisterMode) MaterialTheme.colorScheme.surface else Color.Transparent)
+                        .clickable { isRegisterMode = true }
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "New Store Register",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = if (isRegisterMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            if (isRegisterMode) {
                 OutlinedTextField(
-                    value = phoneNumber,
-                    onValueChange = { phoneNumber = it },
-                    label = { Text("Phone Number (OTP Verification)") },
-                    leadingIcon = { Icon(Icons.Default.Phone, null, tint = DimGhost) },
+                    value = shopName,
+                    onValueChange = { shopName = it },
+                    label = { Text("Shop / Business Name") },
+                    leadingIcon = { Icon(Icons.Default.Store, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = OffWhitePearl,
-                        unfocusedTextColor = OffWhitePearl,
-                        focusedBorderColor = ElectricEmerald,
-                        unfocusedBorderColor = SlateDivider
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    value = otpCode,
-                    onValueChange = { otpCode = it },
-                    label = { Text("Verification OTP Code") },
-                    leadingIcon = { Icon(Icons.Default.Lock, null, tint = DimGhost) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = OffWhitePearl,
-                        unfocusedTextColor = OffWhitePearl,
-                        focusedBorderColor = ElectricEmerald,
-                        unfocusedBorderColor = SlateDivider
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // Submit Button
-                Button(
-                    onClick = onLoginSuccess,
-                    colors = ButtonDefaults.buttonColors(containerColor = ElectricEmerald),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
+                // Shop Type Dropdown
+                ExposedDropdownMenuBox(
+                    expanded = isShopTypeExpanded,
+                    onExpandedChange = { isShopTypeExpanded = it }
                 ) {
-                    Text(
-                        text = if (isRegisterMode) "Create Account & Enter" else "Authenticate & Sign In",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = OffWhitePearl
+                    OutlinedTextField(
+                        value = selectedShopType.displayName,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Business Type") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isShopTypeExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
                         )
                     )
+                    ExposedDropdownMenu(
+                        expanded = isShopTypeExpanded,
+                        onDismissRequest = { isShopTypeExpanded = false },
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ) {
+                        ShopType.values().forEach { type ->
+                            DropdownMenuItem(
+                                text = { Text(type.displayName, color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    selectedShopType = type
+                                    isShopTypeExpanded = false
+                                }
+                            )
+                        }
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
-                // Biometric Local Unlock Option
-                OutlinedButton(
-                    onClick = onLoginSuccess,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(44.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Fingerprint,
-                        contentDescription = "Biometric",
-                        tint = ElectricEmerald,
-                        modifier = Modifier.size(20.dp)
+            OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                label = { Text("Phone Number (OTP Verification)") },
+                leadingIcon = { Icon(Icons.Default.Phone, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = otpCode,
+                onValueChange = { otpCode = it },
+                label = { Text("Verification OTP Code") },
+                leadingIcon = { Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                )
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Submit Button
+            Button(
+                onClick = onLoginSuccess,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Text(
+                    text = if (isRegisterMode) "Create Account & Enter" else "Authenticate & Sign In",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Biometric Device Unlock",
-                        style = MaterialTheme.typography.labelSmall.copy(color = OffWhitePearl)
-                    )
-                }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Biometric Local Unlock Option
+            OutlinedButton(
+                onClick = onLoginSuccess,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Fingerprint,
+                    contentDescription = "Biometric",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Biometric Device Unlock",
+                    style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurface)
+                )
             }
         }
     }

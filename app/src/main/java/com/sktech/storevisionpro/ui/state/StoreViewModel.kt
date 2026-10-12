@@ -123,7 +123,11 @@ data class StoreUiState(
     val todayCustomers: Int = 84,
     val topSellingProduct: String = "Amul Gold Milk 500ml (28 units)",
     val healthScore: Int = 74,
-    val businessHealthReport: com.sktech.storevisionpro.domain.insights.BusinessHealthReport? = null
+    val businessHealthReport: com.sktech.storevisionpro.domain.insights.BusinessHealthReport? = null,
+
+    // App Theme State
+    val isDarkTheme: Boolean = true,
+    val lastCompletedSale: SaleRecord? = null
 )
 
 class StoreViewModel(application: Application) : AndroidViewModel(application) {
@@ -285,7 +289,8 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
                     customerCount = 1,
                     todayRevenue = it.todayRevenue + subtotal,
                     todayCustomers = it.todayCustomers + state.customerCount,
-                    pendingSyncCount = pendingCount
+                    pendingSyncCount = pendingCount,
+                    lastCompletedSale = newSale
                 )
             }
 
@@ -446,6 +451,56 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
             SyncManager.triggerImmediateSync(getApplication())
             val pending = dbHelper.getPendingSyncCount()
             _uiState.update { it.copy(pendingSyncCount = pending, syncState = SyncState.SYNCED) }
+        }
+    }
+
+    // Theme Management
+    fun toggleTheme() {
+        _uiState.update { it.copy(isDarkTheme = !it.isDarkTheme) }
+    }
+
+    fun setDarkTheme(isDark: Boolean) {
+        _uiState.update { it.copy(isDarkTheme = isDark) }
+    }
+
+    fun clearLastCompletedSale() {
+        _uiState.update { it.copy(lastCompletedSale = null) }
+    }
+
+    // Real Inventory Adjustments
+    fun adjustStock(productId: String, delta: Double) {
+        val state = _uiState.value
+        val target = state.products.find { it.id == productId } ?: return
+        val newStock = maxOf(0.0, target.currentStock + delta)
+        val updated = target.copy(currentStock = newStock)
+        viewModelScope.launch {
+            dbHelper.insertOrUpdateProduct(updated, "SHOP-MAIN-01")
+            val updatedList = state.products.map { if (it.id == productId) updated else it }
+            _uiState.update { it.copy(products = updatedList) }
+            val curr = _uiState.value
+            refreshInsightsAndHealth(curr.products, curr.salesHistory, curr.todayRevenue, curr.todayProfit, curr.todayCustomers)
+        }
+    }
+
+    // Real AI Clearance Bundle Execution
+    fun applyClearanceBundle(nearExpiryProductId: String, pairedProductId: String, discountPercent: Double = 50.0) {
+        val state = _uiState.value
+        val updatedList = state.products.map { prod ->
+            if (prod.id == pairedProductId) {
+                prod.copy(sellingPrice = prod.sellingPrice * (1.0 - (discountPercent / 100.0)))
+            } else prod
+        }
+        viewModelScope.launch {
+            val updatedPaired = updatedList.find { it.id == pairedProductId }
+            if (updatedPaired != null) {
+                dbHelper.insertOrUpdateProduct(updatedPaired, "SHOP-MAIN-01")
+            }
+            _uiState.update { st ->
+                val updatedInsights = st.insights.map {
+                    if (it.type == "NEAR_EXPIRY_BUNDLE") it.copy(status = SuggestionStatus.ACCEPTED) else it
+                }
+                st.copy(products = updatedList, insights = updatedInsights)
+            }
         }
     }
 }

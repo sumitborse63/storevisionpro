@@ -34,9 +34,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StoreVisionProTheme(darkTheme = true) {
-                val viewModel: StoreViewModel = viewModel()
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val viewModel: StoreViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            StoreVisionProTheme(darkTheme = uiState.isDarkTheme) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route ?: Screen.SalesOperations.route
@@ -54,7 +55,8 @@ class MainActivity : ComponentActivity() {
                     },
                     onOpenChat = { viewModel.setChatSheetOpen(true) },
                     onOpenLanguage = { navController.navigate(Screen.Language.route) },
-                    onOpenTools = { navController.navigate(Screen.ExtraTools.route) }
+                    onOpenTools = { navController.navigate(Screen.ExtraTools.route) },
+                    onToggleTheme = { viewModel.toggleTheme() }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
@@ -71,7 +73,10 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToProducts = { navController.navigate(Screen.ProductManagement.route) },
                                 onNavigateToAnalytics = { navController.navigate(Screen.Analytics.route) },
                                 onNavigateToInsights = { navController.navigate(Screen.AiInsights.route) },
-                                onOpenVoiceAssistant = { viewModel.setChatSheetOpen(true) }
+                                onOpenVoiceAssistant = { viewModel.setChatSheetOpen(true) },
+                                onApplyClearanceBundle = { nearId, pairId, disc ->
+                                    viewModel.applyClearanceBundle(nearId, pairId, disc)
+                                }
                             )
                         }
 

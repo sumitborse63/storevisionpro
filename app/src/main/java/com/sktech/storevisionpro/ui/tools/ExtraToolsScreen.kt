@@ -63,7 +63,7 @@ fun ExtraToolsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Row(
@@ -74,7 +74,7 @@ fun ExtraToolsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = OffWhitePearl
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
             Column {
@@ -82,12 +82,12 @@ fun ExtraToolsScreen(
                     text = "Business Operations Tools",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = OffWhitePearl
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 )
                 Text(
                     text = "Accounting, Invoicing, Staff RBAC & Integrations",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MutedSilver)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )
             }
         }
@@ -102,9 +102,9 @@ fun ExtraToolsScreen(
         ) {
             items(toolItems) { tool ->
                 Surface(
-                    color = ZincCharcoal,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { activeToolModal = tool.routeKey }
@@ -114,13 +114,13 @@ fun ExtraToolsScreen(
                             modifier = Modifier
                                 .size(38.dp)
                                 .clip(CircleShape)
-                                .background(ZincMetal),
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = tool.icon,
                                 contentDescription = null,
-                                tint = ElectricEmerald,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -131,7 +131,7 @@ fun ExtraToolsScreen(
                             text = tool.title,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = OffWhitePearl,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 14.sp
                             )
                         )
@@ -141,7 +141,7 @@ fun ExtraToolsScreen(
                         Text(
                             text = tool.description,
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MutedSilver,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 11.sp,
                                 lineHeight = 15.sp
                             )

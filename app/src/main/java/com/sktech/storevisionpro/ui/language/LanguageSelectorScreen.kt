@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sktech.storevisionpro.domain.model.AppLanguage
+import com.sktech.storevisionpro.ui.components.DoubleBezelCard
 import com.sktech.storevisionpro.ui.state.StoreUiState
 import com.sktech.storevisionpro.ui.state.StoreViewModel
 import com.sktech.storevisionpro.ui.theme.*
@@ -35,7 +36,7 @@ fun LanguageSelectorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Row(
@@ -46,7 +47,7 @@ fun LanguageSelectorScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = OffWhitePearl
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
             Column {
@@ -54,12 +55,12 @@ fun LanguageSelectorScreen(
                     text = "Select Language",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = OffWhitePearl
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 )
                 Text(
                     text = "भाषा निवडा • भाषा चुनें • Choose UI Language",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MutedSilver)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )
             }
         }
@@ -74,19 +75,17 @@ fun LanguageSelectorScreen(
         ) {
             items(AppLanguage.values()) { lang ->
                 val isSelected = selectedLang == lang
-                Surface(
-                    color = if (isSelected) EmeraldMuted else ZincCharcoal,
-                    shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        if (isSelected) ElectricEmerald else SlateDivider
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedLang = lang }
+                DoubleBezelCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    outerCornerRadius = 14.dp,
+                    innerCornerRadius = 10.dp,
+                    shellColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    innerPadding = 12.dp,
+                    onClick = { selectedLang = lang }
                 ) {
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -95,13 +94,13 @@ fun LanguageSelectorScreen(
                                 text = lang.nativeName,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isSelected) ElectricEmerald else OffWhitePearl,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                                     fontSize = 17.sp
                                 )
                             )
                             Text(
                                 text = lang.englishName,
-                                style = MaterialTheme.typography.labelSmall.copy(color = MutedSilver)
+                                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
 
@@ -109,7 +108,7 @@ fun LanguageSelectorScreen(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = null,
-                                tint = ElectricEmerald,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -123,8 +122,8 @@ fun LanguageSelectorScreen(
                 viewModel.setLanguage(selectedLang)
                 onNavigateBack()
             },
-            colors = ButtonDefaults.buttonColors(containerColor = ElectricEmerald),
-            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
@@ -133,7 +132,7 @@ fun LanguageSelectorScreen(
                 text = "Apply & Save Language Preference",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = OffWhitePearl
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }

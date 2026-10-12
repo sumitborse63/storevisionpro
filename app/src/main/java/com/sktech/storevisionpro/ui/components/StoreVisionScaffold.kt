@@ -35,14 +35,15 @@ fun StoreVisionScaffold(
     onOpenChat: () -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenTools: () -> Unit,
+    onToggleTheme: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SlateDark,
-                    titleContentColor = OffWhitePearl
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 title = {
                     Row(
@@ -61,7 +62,7 @@ fun StoreVisionScaffold(
                             Text(
                                 text = "${uiState.shopType.displayName} • ${uiState.currentRole.displayName}",
                                 style = MaterialTheme.typography.labelSmall.copy(
-                                    color = MutedSilver,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     fontSize = 11.sp
                                 )
                             )
@@ -72,12 +73,21 @@ fun StoreVisionScaffold(
                     // Sync Status Pill Indicator
                     SyncStatusBadge(syncState = uiState.syncState, pendingCount = uiState.pendingSyncCount)
 
+                    // Theme Toggle Button (Sun in Dark Mode -> Moon in Light Mode)
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            imageVector = if (uiState.isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = if (uiState.isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
                     // Language Selector Action
                     IconButton(onClick = onOpenLanguage) {
                         Icon(
                             imageVector = Icons.Default.Translate,
                             contentDescription = "Language",
-                            tint = MutedSilver
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -86,7 +96,7 @@ fun StoreVisionScaffold(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "Extra Tools",
-                            tint = MutedSilver
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -94,11 +104,11 @@ fun StoreVisionScaffold(
         },
         bottomBar = {
             NavigationBar(
-                containerColor = ZincCharcoal,
+                containerColor = MaterialTheme.colorScheme.surface,
                 tonalElevation = 0.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(width = 1.dp, color = SlateDivider)
+                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             ) {
                 BottomNavTabs.forEach { tab ->
                     val selected = currentRoute == tab.route
@@ -109,7 +119,7 @@ fun StoreVisionScaffold(
                             Icon(
                                 imageVector = tab.icon,
                                 contentDescription = tab.title,
-                                tint = if (selected) ElectricEmerald else MutedSilver
+                                tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
                         label = {
@@ -117,12 +127,12 @@ fun StoreVisionScaffold(
                                 text = tab.title,
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (selected) OffWhitePearl else MutedSilver
+                                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = EmeraldMuted
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer
                         )
                     )
                 }
@@ -132,12 +142,12 @@ fun StoreVisionScaffold(
             // Floating AI Assistant Button (waveform / agentic prompt)
             FloatingActionButton(
                 onClick = onOpenChat,
-                containerColor = ElectricEmerald,
-                contentColor = OffWhitePearl,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,
                 modifier = Modifier
                     .size(56.dp)
-                    .border(1.dp, EmeraldBorder, CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.Default.GraphicEq,
@@ -146,7 +156,7 @@ fun StoreVisionScaffold(
                 )
             }
         },
-        containerColor = SlateDark
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         content(innerPadding)
     }
@@ -177,8 +187,8 @@ fun SyncStatusBadge(syncState: SyncState, pendingCount: Int) {
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(ZincMetal)
-            .border(1.dp, SlateDivider, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Box(
@@ -191,7 +201,7 @@ fun SyncStatusBadge(syncState: SyncState, pendingCount: Int) {
             text = text,
             style = MaterialTheme.typography.labelSmall.copy(
                 fontFamily = FontFamily.Monospace,
-                color = OffWhitePearl,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 11.sp
             )
         )

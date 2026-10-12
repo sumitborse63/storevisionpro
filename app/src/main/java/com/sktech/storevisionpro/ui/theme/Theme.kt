@@ -42,26 +42,37 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = ElectricEmerald,
-    onPrimary = SurfaceLight,
-    primaryContainer = Color(0xFFD1FAE5),
+    primary = Color(0xFF059669),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFECFDF5),
     onPrimaryContainer = Color(0xFF065F46),
     secondary = Color(0xFF0284C7),
-    onSecondary = SurfaceLight,
-    background = CanvasLight,
-    onBackground = TextPrimaryLight,
-    surface = SurfaceLight,
-    onSurface = TextPrimaryLight,
-    surfaceVariant = SurfaceElevatedLight,
-    onSurfaceVariant = TextSecondaryLight,
-    outline = DividerLight,
-    error = SignalCrimson,
-    onError = SurfaceLight
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFE0F2FE),
+    onSecondaryContainer = Color(0xFF0369A1),
+    tertiary = Color(0xFFD97706),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFFEF3C7),
+    onTertiaryContainer = Color(0xFF92400E),
+    background = Color(0xFFF8FAFC),
+    onBackground = Color(0xFF0F172A),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF0F172A),
+    surfaceVariant = Color(0xFFF1F5F9),
+    onSurfaceVariant = Color(0xFF64748B),
+    surfaceContainer = Color(0xFFFFFFFF),
+    surfaceContainerHigh = Color(0xFFF8FAFC),
+    outline = Color(0xFFE2E8F0),
+    outlineVariant = Color(0xFFF1F5F9),
+    error = Color(0xFFDC2626),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFEE2E2),
+    onErrorContainer = Color(0xFF991B1B)
 )
 
 @Composable
 fun StoreVisionProTheme(
-    darkTheme: Boolean = true, // Cockpit Dark is the default signature retail mode
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme

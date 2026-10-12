@@ -1,5 +1,6 @@
 package com.sktech.storevisionpro.ui.insights
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -20,10 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sktech.storevisionpro.pdf.PdfReportGenerator
+import com.sktech.storevisionpro.ui.components.DoubleBezelCard
 import com.sktech.storevisionpro.ui.state.StoreUiState
 import com.sktech.storevisionpro.ui.theme.*
 
@@ -32,7 +37,14 @@ fun BusinessHealthCheckScreen(
     uiState: StoreUiState,
     onNavigateBack: () -> Unit
 ) {
-    val report = uiState.businessHealthReport ?: remember(uiState.products, uiState.salesHistory, uiState.todayRevenue, uiState.todayProfit, uiState.todayCustomers) {
+    val context = LocalContext.current
+    val report = uiState.businessHealthReport ?: remember(
+        uiState.products,
+        uiState.salesHistory,
+        uiState.todayRevenue,
+        uiState.todayProfit,
+        uiState.todayCustomers
+    ) {
         com.sktech.storevisionpro.domain.insights.BusinessHealthCheckEngine.evaluateBusinessHealth(
             products = uiState.products,
             sales = uiState.salesHistory,
@@ -45,53 +57,101 @@ fun BusinessHealthCheckScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(SlateDark)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Top Header
         item {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = OffWhitePearl
-                    )
-                }
-                Column {
-                    Text(
-                        text = "Business Health Diagnostic",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = OffWhitePearl
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
+                    }
+                    Column {
+                        Text(
+                            text = "Business Health Diagnostic",
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        )
+                        Text(
+                            text = "Comprehensive Financial & Margin Audit",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
+
+                // Export PDF Button
+                Button(
+                    onClick = {
+                        val pdf = PdfReportGenerator.generateBusinessReport(
+                            context = context,
+                            shopName = uiState.currentShopName,
+                            shopType = uiState.shopType.displayName,
+                            period = "Diagnostic Report",
+                            totalRevenue = uiState.todayRevenue,
+                            netProfit = uiState.todayProfit,
+                            totalCustomers = uiState.todayCustomers,
+                            sales = uiState.salesHistory,
+                            products = uiState.products
+                        )
+                        if (pdf != null) {
+                            PdfReportGenerator.sharePdfReport(context, pdf)
+                        } else {
+                            Toast.makeText(context, "Failed to compile PDF report", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(10.dp),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PictureAsPdf,
+                        contentDescription = "Export PDF",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Comprehensive Financial, Margin & Retention Audit",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = MutedSilver)
+                        text = "Export PDF",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
                     )
                 }
             }
         }
 
-        // Radial Gauge Card
+        // Radial Gauge Double-Bezel Card
         item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = ZincCharcoal),
-                shape = RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
-                modifier = Modifier.fillMaxWidth()
+            DoubleBezelCard(
+                outerCornerRadius = 18.dp,
+                innerCornerRadius = 14.dp,
+                innerPadding = 18.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val arcBgColor = MaterialTheme.colorScheme.surfaceVariant
+                    val arcHighlightColor = if (report.overallScore >= 70) MaterialTheme.colorScheme.primary else WarningAmber
+
                     Box(
                         modifier = Modifier.size(140.dp),
                         contentAlignment = Alignment.Center
@@ -99,7 +159,7 @@ fun BusinessHealthCheckScreen(
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             // Background Arc
                             drawArc(
-                                color = Color(0xFF27272A),
+                                color = arcBgColor,
                                 startAngle = 135f,
                                 sweepAngle = 270f,
                                 useCenter = false,
@@ -107,7 +167,7 @@ fun BusinessHealthCheckScreen(
                             )
                             // Health Arc
                             drawArc(
-                                color = if (report.overallScore >= 70) ElectricEmerald else WarningAmber,
+                                color = arcHighlightColor,
                                 startAngle = 135f,
                                 sweepAngle = 270f * (report.overallScore / 100f),
                                 useCenter = false,
@@ -122,14 +182,14 @@ fun BusinessHealthCheckScreen(
                                     fontFamily = FontFamily.Monospace,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 38.sp,
-                                    color = if (report.overallScore >= 70) ElectricEmerald else WarningAmber
+                                    color = arcHighlightColor
                                 )
                             )
                             Text(
                                 text = "Score: ${report.ratingLabel}",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = if (report.overallScore >= 70) ElectricEmerald else WarningAmber
+                                    color = arcHighlightColor
                                 )
                             )
                         }
@@ -141,32 +201,32 @@ fun BusinessHealthCheckScreen(
                         text = "Store Operating at ${report.overallScore}% Efficiency",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = OffWhitePearl
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     Text(
                         text = report.summary,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 12.sp,
-                            color = MutedSilver
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
             }
         }
 
-        // Diagnostic Pillars Breakdown
+        // Diagnostic Pillars Breakdown Header
         item {
             Text(
                 text = "Diagnostic Pillar Breakdown",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = OffWhitePearl
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 report.pillars.forEach { pillar ->
                     HealthPillarRow(
                         title = pillar.title,
@@ -182,46 +242,44 @@ fun BusinessHealthCheckScreen(
 
         // Recommended Strategic Action Plan
         item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = ZincCharcoal),
-                shape = RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, SlateDivider),
-                modifier = Modifier.fillMaxWidth()
+            DoubleBezelCard(
+                outerCornerRadius = 16.dp,
+                innerCornerRadius = 12.dp,
+                shellColor = AmberMuted.copy(alpha = 0.35f),
+                borderColor = WarningAmber.copy(alpha = 0.4f)
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Lightbulb,
-                            contentDescription = null,
-                            tint = WarningAmber,
-                            modifier = Modifier.size(18.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lightbulb,
+                        contentDescription = null,
+                        tint = WarningAmber,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = "Recommended Remediation Strategies",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
-                        Text(
-                            text = "Recommended Remediation Strategies",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = OffWhitePearl
-                            )
-                        )
-                    }
+                    )
+                }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                    report.strategicRemediations.forEachIndexed { idx, remediation ->
-                        Text(
-                            text = "${idx + 1}. $remediation",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 12.sp,
-                                color = MutedSilver,
-                                lineHeight = 18.sp
-                            )
+                report.strategicRemediations.forEachIndexed { idx, remediation ->
+                    Text(
+                        text = "${idx + 1}. $remediation",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 18.sp
                         )
-                        if (idx < report.strategicRemediations.lastIndex) {
-                            Spacer(modifier = Modifier.height(6.dp))
-                        }
+                    )
+                    if (idx < report.strategicRemediations.lastIndex) {
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
                 }
             }
@@ -238,88 +296,71 @@ fun HealthPillarRow(
     isPositive: Boolean,
     explanation: String
 ) {
-    Surface(
-        color = ZincCharcoal,
-        shape = RoundedCornerShape(8.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (isPositive) SlateDivider else AmberMuted),
-        modifier = Modifier.fillMaxWidth()
+    DoubleBezelCard(
+        modifier = Modifier.fillMaxWidth(),
+        outerCornerRadius = 12.dp,
+        innerCornerRadius = 9.dp,
+        innerPadding = 12.dp
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = OffWhitePearl
-                    )
-                )
-
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(if (isPositive) EmeraldMuted else AmberMuted)
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = statusText,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = if (isPositive) ElectricEmerald else WarningAmber,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 10.sp
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = rating,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isPositive) ElectricEmerald else WarningAmber
-                    )
-                )
-                Text(
-                    text = "($benchmark)",
-                    style = MaterialTheme.typography.labelSmall.copy(color = DimGhost)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = explanation,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 12.sp,
-                    color = MutedSilver,
-                    lineHeight = 16.sp
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             )
-        }
-    }
-}
 
-@androidx.compose.ui.tooling.preview.Preview(
-    showBackground = true,
-    backgroundColor = 0xFF09090B,
-    name = "Business Health Radial Gauge Preview"
-)
-@Composable
-fun BusinessHealthCheckScreenPreview() {
-    StoreVisionProTheme(darkTheme = true) {
-        BusinessHealthCheckScreen(
-            uiState = StoreUiState(),
-            onNavigateBack = {}
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (isPositive) MaterialTheme.colorScheme.primaryContainer else AmberMuted)
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = statusText,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = if (isPositive) MaterialTheme.colorScheme.primary else WarningAmber,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = rating,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isPositive) MaterialTheme.colorScheme.primary else WarningAmber
+                )
+            )
+            Text(
+                text = "($benchmark)",
+                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = explanation,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 16.sp
+            )
         )
     }
 }
